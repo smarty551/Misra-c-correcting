@@ -6,26 +6,26 @@ static u16 gen_crc16(const u8 *data, u16 size, u32 CRC16);
 void SECR_CrcPolynomialGenerate(u32* PolynomialPtr,u8 CrcLengthInBits)
 {
 	u32 DevisorValue;
-	DevisorValue = (u32)(GetPower(2,CrcLengthInBits)) - 1;
-	*PolynomialPtr = (rand() % DevisorValue) +0x10000 ;
+	DevisorValue = (u32)(GetPower(2,CrcLengthInBits)) - 1U;
+	*PolynomialPtr = (rand() % DevisorValue) +0x10000U ;
 }
 /***************************************************************************************/
 void SECR_GnerateCrc(const u8* PayloadPtr,u16 PayloadLength, u16* CrcPtr, u32 CrcPoly)
 {
 	u16 LoopIndex;
-	static u8 InternalBuffer[8];
+	static u8 InternalBuffer[8U];
 	/*Copying data to internal buffer*/
-	for (LoopIndex = 0; LoopIndex < PayloadLength; LoopIndex ++)
+	for (LoopIndex = 0U; LoopIndex < PayloadLength; LoopIndex ++)
 	{
 		InternalBuffer[LoopIndex] = *(PayloadPtr + LoopIndex);
 	}
 	/*perform bit wise invert on the data*/
-	for (LoopIndex = 0; LoopIndex < PayloadLength; LoopIndex ++)
+	for (LoopIndex = 0U; LoopIndex < PayloadLength; LoopIndex ++)
 	{
-		InternalBuffer[LoopIndex]  ^= 0xff;
+		InternalBuffer[LoopIndex]  ^= 0xffU;
 	}
 	/*Generate CRC*/
-	*CrcPtr = gen_crc16(InternalBuffer,PayloadLength*8,0x18005);
+	*CrcPtr = gen_crc16(InternalBuffer,PayloadLength*8U,0x18005U);
 }
 /***************************************************************************************/
 static u32 GetPower(u32 Base,u32 Pow)

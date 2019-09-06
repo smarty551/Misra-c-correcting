@@ -156,15 +156,15 @@ u8 GYHD_Init(void)
 	u8 RetVal;
 	GYHD_INIT_SLAVE_SELECT();
 	SPI_vidInit();
-	GYHD_u8TimeOutFlag = 0;
-	GYHD_u8StartTimeoutFlag = 0;
+	GYHD_u8TimeOutFlag = 0U;
+	GYHD_u8StartTimeoutFlag = 0U;
 	/*To Do: Initialized Module Registers with the Specific values*/
 	/*Wait for Entering Power Down Mode*/
 	do 
 	{
 	  u8START_TIME_OUT_MS(250,&GYHD_u8TimeOutFlag);	
-	}while (GYHD_u8TimeOutFlag == 0);
-	GYHD_u8TimeOutFlag = 0;
+	}while (GYHD_u8TimeOutFlag == 0U);
+	GYHD_u8TimeOutFlag = 0U;
 	
 		/*Perform Sensor Self Test*/
 	RetVal = udtSelfTest();
@@ -190,7 +190,7 @@ u8 GYHD_Init(void)
 void GYHD_WakeUpModule(u8* u8WakeUpStatePtr)
 {
 	vidManageOperationModes(u8NORMAL_MOD);
-	if((GYHD_u8LastPowerMode == u8NORMAL_MOD) && (GYHD_u8StartTimeoutFlag == 0))
+	if((GYHD_u8LastPowerMode == u8NORMAL_MOD) && (GYHD_u8StartTimeoutFlag == 0U))
 	{
 		*u8WakeUpStatePtr = u8WAKEUP_DN;
 	}

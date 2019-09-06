@@ -16,8 +16,10 @@ typedef struct
 	u8 PortMask_struct;
 }BLMGR_DioPinConfig;
 
-#define BLOUETOOTH_ON 0xff
-#define BUZEER_ON     0xff
+#define BLOUETOOTH_ON                                                (0xffU)
+#define BUZEER_ON                                                    (0xffU)
+#define BUZEER_ON                                                    (0xffU)
+#define BUZEER_OFF                                                   (0x00U)
 
  extern BLMGR_DioPinConfig BuzzerConfig;
  extern BLMGR_DioPinConfig BlueToothPwrConfig;
