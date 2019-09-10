@@ -12,6 +12,6 @@
 
 void KPD_Init(void);
 void KPD_ReadVal(unsigned char* ValuePtr);
-
+void KPD_ReadVal(char* ValuePtr);
 
 #endif /* KEYPAD_H_ */

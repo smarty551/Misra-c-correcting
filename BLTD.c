@@ -8,26 +8,25 @@
 #include "UART_Drv.h"
 #include "BLTD.h"
 
-static u8 BTCommandBuffer[100];
 static u8 IsRespRecieved = 0;
 static u8 RxBuffer[100];
-static void BTCommandSend(u8* Command,u16 CommandLength);
-static  void MemCpy(u8 *Des,const u8 *Src,u16 Length);
+static void BTCommandSend(const u8* Command,u16 CommandLength);
+static  void MemCpy(u8 Des[],const u8 Src[],u16 Length);
 static void RxcCallBackFun(void);
-static u8 MemCmp(const u8 * Src1,const u8 *Src2,u16 CmpLength);
+static u8 MemCmp(const u8  Src1[],const u8 Src2[],u16 CmpLength);
 /***************************************************************************************************************/
 void BLTD_SendInitCmd(void)
 {	IsRespRecieved = 0U;
-	UART_StartReception(RxBuffer,4,RxcCallBackFun);
-	BTCommandSend((u8*)"+INIT",5);
+	UART_StartReception(RxBuffer,4U,&RxcCallBackFun);
+	BTCommandSend((u8*)"+INIT",5U);
 }
 /***************************************************************************************************************/
 void BLTD_SendInquireCmd(void)
 {	IsRespRecieved = 0U;
-	UART_StartReception(RxBuffer,4,RxcCallBackFun);
-	BTCommandSend((u8*)"+INQ",4);
+	UART_StartReception(RxBuffer,4U,&RxcCallBackFun);
+	BTCommandSend((u8*)"+INQ",4U);
 }
-u8 BLTD_CheckForResponse(u8* Response,u16 RespLength)
+u8 BLTD_CheckForResponse(const u8* Response,u16 RespLength)
 {
 	u8 RespStatus;
 	u8 IsEqual;
@@ -57,24 +56,24 @@ u8 BLTD_CheckForResponse(u8* Response,u16 RespLength)
 void BLTD_StartWaitPairing(void)
 {
 	UART_StopRception();
-	UART_StartReception(RxBuffer,4,RxcCallBackFun);
-	//BTCommandSend(0,0);
+	UART_StartReception(RxBuffer,4U,&RxcCallBackFun);
+	/*BTCommandSend(0,0);*/
 	
 }
 /***************************************************************************************************************/	
-void BLTD_SendMessage(u8* Message,u16 MsgLength)
+void BLTD_SendMessage(const u8* Message,u16 MsgLength)
 {
 	UART_TxBuffer(Message,MsgLength);
 }	
 /***************************************************************************************************************/
-u8 BLTD_GetRecievedData(u8*Data, u16 Length)
+u8 BLTD_GetRecievedData( u8 Data[], u16 Length)
 {
-	u8 RespStatus;
+	u8 RespStatusr;
 	u8 i;
 	if(IsRespRecieved == 1U)
 	{
 		IsRespRecieved = 0U;
-		RespStatus = BLTD_RESP_STATUS_OK;
+		RespStatusr = BLTD_RESP_STATUS_OK;
 		for( i = 0U; i< Length ; i++)
 		{
 			Data[i] = RxBuffer[i];
@@ -82,10 +81,10 @@ u8 BLTD_GetRecievedData(u8*Data, u16 Length)
 	}
 	else
 	{
-		RespStatus = BLTD_RESP_STATUS_NON;
+		RespStatusr = BLTD_RESP_STATUS_NON;
 	}		
 		
-	return RespStatus;
+	return RespStatusr;
 }
 /***************************************************************************************************************/
 void BLTD_StartReceivingData(u8* DataBuffer,u16 BufferLength,CbkPfnType CbkFnPtr)
@@ -104,7 +103,7 @@ u8 BLTD_CheckForData(u8* Data)
 		IsReceived = 0x01U;
 		*Data = RxBuffer[RxBytesNum+1U];
 		UART_StopRception();
-		UART_StartReception(RxBuffer,100,RxcCallBackFun);
+		UART_StartReception(RxBuffer,(u16)100U,&RxcCallBackFun);
 	}
 	else
 	{
@@ -117,28 +116,29 @@ u8 BLTD_CheckForData(u8* Data)
 /***************************************************************************************************************/	
 void BLTD_SenTestCmd(void)
 {
-	UART_StartReception(RxBuffer,4,RxcCallBackFun);
-	BTCommandSend(0,0);
+	UART_StartReception(RxBuffer,(u16)4U,&RxcCallBackFun);
+	BTCommandSend((u8 *)0U,(u16)0U);
 	
 }
 /***************************************************************************************************************/
-static void BTCommandSend(u8* Command,u16 CommandLength)
+static void BTCommandSend(const u8* Command,u16 CommandLength)
 	{
-		BTCommandBuffer[0] = 'A';
-		BTCommandBuffer[1] = 'T';
+     u8 BTCommandBuffer[100];
+		BTCommandBuffer[0] = (u8)'A';
+		BTCommandBuffer[1] = (u8)'T';
 		MemCpy(&BTCommandBuffer[2],Command,CommandLength);
-		BTCommandBuffer[CommandLength+2] = 0x0dU;
-		BTCommandBuffer[CommandLength+3] = 0x0aU;
+		BTCommandBuffer[CommandLength+2U] = 0x0dU;
+		BTCommandBuffer[CommandLength+3U] = 0x0aU;
 		UART_TxBuffer(BTCommandBuffer,CommandLength + 4U);
 		
 	}
 /***************************************************************************************************************/
-static  void MemCpy(u8 *Des,const u8 *Src,u16 Length)
+static  void MemCpy(u8 Des[],const u8 Src[],u16 Length)
 	{
-	u16 i;
-	for(i = 0U ; i<Length ; i++)
+	u16 ii;
+	for(ii = 0U ; ii<Length ; ii++)
 		{
-		*(Des+i) = *(Src+i);
+		Des[ii] = Src[ii];
 		}
 	}
 /***************************************************************************************************************/	
@@ -148,13 +148,13 @@ static void RxcCallBackFun(void)
 	IsRespRecieved = 1U;
 }
 /***************************************************************************************************************/
-static u8 MemCmp(const u8 * Src1,const u8 *Src2,u16 CmpLength)
+static u8 MemCmp(const u8  Src1[],const u8 Src2[],u16 CmpLength)
 	{
 	u8 RetVal = 0;
-	u16 i;
-	for(i = 0U ;(i < CmpLength); i++)
+	u16 iii;
+	for(iii = 0U ;(iii < CmpLength); iii++)
 		{
-		if(Src1[i] != Src2[i])
+		if(Src1[iii] != Src2[iii])
 			{
 			RetVal = 1U;
 			break;
