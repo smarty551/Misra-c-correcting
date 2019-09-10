@@ -14,7 +14,7 @@
 #define u8FS_250 0x00
 #define u8FS_500 0x20
 #define u8FS_2000 0x30
-#define u8FULL_SCALE u8FS_250
+#define u8FULL_SCALE (u8FS_250)
 
 /*Axis Activation Configuration*/
 #define u8AXIS_INACTIVE 0x00
